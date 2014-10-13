@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2321F9B019EC06D70098F9B7 /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2321F9AF19EC06D70098F9B7 /* Singleton.m */; };
 		23DF157719E35E2D00E5942A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 23DF157619E35E2D00E5942A /* main.m */; };
 		23DF157A19E35E2D00E5942A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23DF157919E35E2D00E5942A /* AppDelegate.m */; };
 		23DF157D19E35E2D00E5942A /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23DF157C19E35E2D00E5942A /* MasterViewController.m */; };
@@ -29,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2321F9AE19EC06D70098F9B7 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
+		2321F9AF19EC06D70098F9B7 /* Singleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Singleton.m; sourceTree = "<group>"; };
 		23DF157119E35E2D00E5942A /* iTunes_top_charts_2_(Universal).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iTunes_top_charts_2_(Universal).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23DF157519E35E2D00E5942A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23DF157619E35E2D00E5942A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -95,6 +98,8 @@
 				23DF157F19E35E2D00E5942A /* DetailViewController.m */,
 				23DF159D19E3B89500E5942A /* SettingsViewController.h */,
 				23DF159E19E3B89500E5942A /* SettingsViewController.m */,
+				2321F9AE19EC06D70098F9B7 /* Singleton.h */,
+				2321F9AF19EC06D70098F9B7 /* Singleton.m */,
 				23DF158119E35E2D00E5942A /* Main.storyboard */,
 				23DF158419E35E2E00E5942A /* Images.xcassets */,
 				23DF158619E35E2E00E5942A /* LaunchScreen.xib */,
@@ -232,6 +237,7 @@
 				23DF157A19E35E2D00E5942A /* AppDelegate.m in Sources */,
 				23DF157D19E35E2D00E5942A /* MasterViewController.m in Sources */,
 				23DF159F19E3B89500E5942A /* SettingsViewController.m in Sources */,
+				2321F9B019EC06D70098F9B7 /* Singleton.m in Sources */,
 				23DF157719E35E2D00E5942A /* main.m in Sources */,
 				23DF158019E35E2D00E5942A /* DetailViewController.m in Sources */,
 			);
@@ -428,6 +434,7 @@
 				23DF159919E35E2E00E5942A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		23DF159A19E35E2E00E5942A /* Build configuration list for PBXNativeTarget "iTunes_top_charts_2_(Universal)Tests" */ = {
 			isa = XCConfigurationList;
@@ -436,6 +443,7 @@
 				23DF159C19E35E2E00E5942A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

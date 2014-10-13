@@ -7,7 +7,6 @@
 //
 
 #import "SettingsViewController.h"
-#import "MasterViewController.h"
 
 
 @interface SettingsViewController ()
@@ -20,8 +19,14 @@
 @synthesize type = _type;
 
 - (void)viewDidLoad {
-    mediaTypes = [[NSArray alloc] initWithObjects:@"Top Audiobooks", @"Top Free Books", @"Top Paid Books", @"Top Text Books", @"iOS New Apps", @"iOS New Apps", @"iOS New Free Apps", @"iOS New Paid Apps", @"iOS Top Free Apps", @"iOS Top iPad Apps", @"iOS Top Grossing Apps", @"iOS Top Grossing iPad Apps", @"iOS Top iPad Apps", @"iOS Top Paid iPad Apps", @"iTunesU Collections", @"iTunesU Courses", @"Mac Top Free Apps", @"Mac Top Grossing Apps", @"Mac Top Apps", @"Mac Top Paid Apps", @"Movies", @"Video Rentals", @"Top Albums", @"Top iMixes", @"Top Songs", @"Top Music Videos", @"Top Podcasts", @"Top TV Episodes", @"Top TV Seasons", nil];
+    mediaTypesKeys =[[NSArray alloc] initWithObjects:@"Top Audiobooks", @"Top Free Books", @"Top Paid Books", @"Top Text Books", @"iOS New Apps", @"iOS New Apps", @"iOS New Free Apps", @"iOS New Paid Apps", @"iOS Top Free Apps", @"iOS Top iPad Apps", @"iOS Top Grossing Apps", @"iOS Top Grossing iPad Apps", @"iOS Top iPad Apps", @"iOS Top Paid iPad Apps", @"iTunesU Collections", @"iTunesU Courses", @"Mac Top Free Apps", @"Mac Top Grossing Apps", @"Mac Top Apps", @"Mac Top Paid Apps", @"Movies", @"Video Rentals", @"Top Albums", @"Top iMixes", @"Top Songs", @"Top Music Videos", @"Top Podcasts", @"Top TV Episodes", @"Top TV Seasons", nil];
     
+    mediaTypesObjects = [[NSArray alloc] initWithObjects:@"topaudiobooks", @"topfreeebooks", @"toppaidebooks", @"toptextbooks", @"newapplications", @"newfreeapplications", @"newfreeapplications", @"newpaidapplications", @"topfreeapplications", @"topfreeipadapplications", @"topgrossingapplications", @"topgrossingipadapplications", @"toppaidapplications", @"toppaidipadapplications", @"topitunesucollections", @"topitunesucourses", @"topfreemacapps", @"topgrossingmacapps", @"topmacapps", @"toppaidmacapps", @"topmovies", @"topvideorentals", @"topalbums", @"topimixes", @"topsongs", @"topmusicvideos", @"toppodcasts", @"toptvepisodes", @"toptvseasons", nil];
+    
+    mediaTypes = [NSDictionary dictionaryWithObjects:mediaTypesObjects forKeys:mediaTypesKeys];
+    
+    sharedType = [Singleton sharedInstance];
+
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
@@ -37,115 +42,112 @@
     return 1;
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MediaTypeChanged" object:sharedType.globalMediaType];
+}
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return [mediaTypes count];
+    return [mediaTypesKeys count];
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView
              titleForRow:(NSInteger)row
             forComponent:(NSInteger)component {
-    return [mediaTypes objectAtIndex:row];
+    return [mediaTypesKeys objectAtIndex:row];
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     switch (row) {
         case 0:
-            _type = @"topaudiobooks"; // Top Audiobooks
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Audiobooks"]; // Top Audiobooks
             break;
         case 1:
-            _type = @"topfreeebooks"; // Top Free Books
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Free Books"]; // Top Free Books
             break;
         case 2:
-            _type = @"toppaidebooks"; // Top Paid Books
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Paid Books"]; // Top Paid Books
             break;
         case 3:
-            _type = @"toptextbooks"; // Top Text Books
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Text Books"]; // Top Text Books
             break;
         case 4:
-            _type = @"newapplications"; // iOS New Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS New Apps"]; // iOS New Apps
             break;
         case 5:
-            _type = @"newfreeapplications"; // iOS New Free Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS New Free Apps"]; // iOS New Free Apps
             break;
         case 6:
-            _type = @"newpaidapplications"; // iOS New Paid Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS New Paid Apps"]; // iOS New Paid Apps
             break;
         case 7:
-            _type = @"topfreeapplications"; // iOS Top Free Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS Top Free Apps"]; // iOS Top Free Apps
             break;
         case 8:
-            _type = @"topfreeipadapplications"; // iOS Top iPad Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS Top iPad Apps"]; // iOS Top iPad Apps
             break;
         case 9:
-            _type = @"topgrossingapplications"; // iOS Top Grossing Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS Top Grossing Apps"]; // iOS Top Grossing Apps
             break;
         case 10:
-            _type = @"topgrossingipadapplications"; // iOS Top Grossing iPad Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS Top Grossing iPad Apps"]; // iOS Top Grossing iPad Apps
             break;
         case 11:
-            _type = @"toppaidapplications"; // iOS Top iPad Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS Top iPad Apps"]; // iOS Top iPad Apps
             break;
         case 12:
-            _type = @"toppaidipadapplications"; // iOS Top Paid iPad Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iOS Top Paid iPad Apps"]; // iOS Top Paid iPad Apps
             break;
         case 13:
-            _type = @"topitunesucollections"; // iTunesU Collections
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iTunesU Collections"]; // iTunesU Collections
             break;
         case 14:
-            _type = @"topitunesucourses"; // iTunesU Courses
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"iTunesU Courses"]; // iTunesU Courses
             break;
         case 15:
-            _type = @"topfreemacapps"; // Mac Top Free Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Mac Top Free Apps"]; // Mac Top Free Apps
             break;
         case 16:
-            _type = @"topgrossingmacapps"; // Mac Top Grossing Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Mac Top Grossing Apps"]; // Mac Top Grossing Apps
             break;
         case 17:
-            _type = @"topmacapps"; // Mac Top Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Mac Top Apps"]; // Mac Top Apps
             break;
         case 18:
-            _type = @"toppaidmacapps"; // Mac Top Paid Apps
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Mac Top Paid Apps"]; // Mac Top Paid Apps
             break;
         case 19:
-            _type = @"topmovies"; // Movies
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Movies"]; // Movies
             break;
         case 20:
-            _type = @"topvideorentals"; // Video Rentals
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Video Rentals"]; // Video Rentals
             break;
         case 21:
-            _type = @"topalbums"; // Top Albums
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Albums"]; // Top Albums
             break;
         case 22:
-            _type = @"topimixes"; // Top iMixes
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top iMixes"]; // Top iMixes
             break;
         case 23:
-            _type = @"topsongs"; // Top Songs
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Songs"]; // Top Songs
             break;
         case 24:
-            _type = @"topmusicvideos"; // Top Music Videos
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Music Videos"]; // Top Music Videos
             break;
         case 25:
-            _type = @"toppodcasts"; // Top Podcasts
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top Podcasts"]; // Top Podcasts
             break;
         case 26:
-            _type = @"toptvepisodes"; // Top TV Episodes
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top TV Episodes"]; // Top TV Episodes
             break;
         case 27:
-            _type = @"toptvseasons"; // Top TV Seasons
+            sharedType.globalMediaType = [mediaTypes objectForKey:@"Top TV Seasons"]; // Top TV Seasons
             break;
     }
     
 }
 
-#pragma mark - segues
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-        MasterViewController *masterController = (MasterViewController *)[[segue destinationViewController] topViewController];
-        
-        [masterController setSourceUrlItem:_type];
-        
-}
 
 /*
 #pragma mark - Navigation

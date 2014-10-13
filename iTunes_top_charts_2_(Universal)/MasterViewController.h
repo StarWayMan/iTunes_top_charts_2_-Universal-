@@ -7,17 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SettingsViewController.h"
+
+NSString *jsonReference;
+static NSString *messageText;
+static UIColor *messageColor;
+static UIFont *messageFont;
+static UIColor *messageBackgroundColor;
 
 @class DetailViewController;
-@class SettingsViewController;
 
 @interface MasterViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, NSURLConnectionDataDelegate>
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
-@property (strong, nonatomic) SettingsViewController *settingsViewController;
 
-@property (strong, nonatomic) id sourceUrlItem;
-@property NSString *sourceUrl;
+@property (nonatomic, copy) SettingsViewController *mediaTypeReference;
+@property (nonatomic, copy) NSString *mediaType;
 
 
 @end

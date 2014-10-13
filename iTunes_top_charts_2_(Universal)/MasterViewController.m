@@ -8,7 +8,6 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
-#import "SettingsViewController.h"
 
 @interface MasterViewController ()
 {
@@ -27,6 +26,8 @@
 const int songNameLabel = 100;
 const int artistNameLabel = 101;
 
+@synthesize mediaTypeReference = _mediaTypeReference;
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -37,6 +38,15 @@ const int artistNameLabel = 101;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    messageText = @"No data is currently available. Please pull down to refresh.";
+    messageColor = [UIColor blackColor];
+    messageFont = [UIFont fontWithName:@"Palatino-Italic" size:20];;
+    messageBackgroundColor = [UIColor whiteColor];
+    
+    self.mediaType = @"topaudiobooks";
+    
+    self.title = self.mediaType.description;
 
     // Implement a tableView
     [[self tableView] setDelegate:self];
@@ -46,9 +56,6 @@ const int artistNameLabel = 101;
     artistArray = [[NSMutableArray alloc] init];
     imageArray = [[NSMutableArray alloc] init];
     
-    // Create bar buttons
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
-    self.navigationItem.rightBarButtonItem = settingsButton;
     
     // Add a splitview
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
@@ -60,6 +67,25 @@ const int artistNameLabel = 101;
     refreshControl.tintColor = [UIColor whiteColor];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:refreshControl];
+    
+    //add observer
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mediaTypeChanged:) name:@"MediaTypeChanged" object:nil];
+    
+    [self refreshUI];
+
+}
+
+// observer
+- (void)mediaTypeChanged:(NSNotification *)notification {
+    if( !notification.object )
+        return;
+    
+    self.mediaType = notification.object;
+    [self refreshUI];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
@@ -68,23 +94,16 @@ const int artistNameLabel = 101;
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Implement bar buttons
-
--(void)showSettings:(id)sender {
-    
-}
-
 
 #pragma mark - Loading data
 
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    //[webData setLength:0];
+
 }
 
 -(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    webData = [[NSMutableData alloc]init];
     [webData appendData:data];
 }
 
@@ -145,12 +164,12 @@ const int artistNameLabel = 101;
         // Display a message when the table is empty
         UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
         
-        messageLabel.text = @"No data is currently available. Please pull down to refresh.";
-        messageLabel.textColor = [UIColor blackColor];
+        messageLabel.text = messageText;
+        messageLabel.textColor = messageColor;
         messageLabel.numberOfLines = 0;
         messageLabel.textAlignment = NSTextAlignmentCenter;
-        messageLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:20];
-        messageLabel.backgroundColor = [UIColor whiteColor];
+        messageLabel.font = messageFont;
+        messageLabel.backgroundColor = messageBackgroundColor;
         [messageLabel sizeToFit];
         
         self.tableView.backgroundView = messageLabel;
@@ -179,19 +198,32 @@ const int artistNameLabel = 101;
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
+    [self refreshUI];
+    [refreshControl endRefreshing];
+}
+
+-(void)refreshUI {
     [nameArray removeAllObjects];
     [artistArray removeAllObjects];
     [imageArray removeAllObjects];
-    
-    [[self tableView] reloadData];
+    [self.tableView reloadData];
     
     [self.tableView setBackgroundView:nil];
+
+    jsonReference = [NSString stringWithFormat:@"%@/%@/%@", @"http://itunes.apple.com/rss/", self.mediaType, @"/json"];
+    NSURL *url = [NSURL URLWithString:jsonReference];
     
-    NSURL *url = [NSURL URLWithString:@"http://itunes.apple.com/ru/rss/topsongs/limit=100/json"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
     connection = [NSURLConnection connectionWithRequest:request delegate:self];
     
-    [refreshControl endRefreshing];
+    if (connection) {
+        webData = [[NSMutableData alloc]init];
+    }
+    
+    self.title = self.mediaType.description;
+
+
 }
 
 @end

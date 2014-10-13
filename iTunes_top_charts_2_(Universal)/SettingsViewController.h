@@ -7,17 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class MasterViewController;
+#import "Singleton.h"
 
 @interface SettingsViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource> {
-    NSArray *mediaTypes;
+    NSArray *mediaTypesKeys;
+    NSArray *mediaTypesObjects;
+    NSDictionary *mediaTypes;
     IBOutlet UIPickerView *mediaTypePicker;
+    Singleton *sharedType;
 }
 
 @property (retain, nonatomic) IBOutlet UIPickerView *mediaTypePicker;
 
-@property (strong, nonatomic) MasterViewController *masterViewController;
 
 //@property (strong, nonatomic) id typeSettingsItem;
 @property NSString *type;
