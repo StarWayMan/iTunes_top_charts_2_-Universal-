@@ -13,9 +13,15 @@
 {
     NSMutableData *webData;
     NSURLConnection *connection;
+    
     NSMutableArray *nameArray;
     NSMutableArray *artistArray;
-    NSMutableArray *imageArray;
+    NSMutableArray *priceArray;
+    NSMutableArray *rightsArray;
+    NSMutableArray *idArray;
+    
+    NSMutableArray *smallImageArray;
+    NSMutableArray *bigImageArray;
 }
 
 
@@ -23,8 +29,14 @@
 
 @implementation MasterViewController
 
+
+
 const int songNameLabel = 100;
 const int artistNameLabel = 101;
+const int smallUIImageView = 102;
+
+const int smallImageIndex = 0;
+const int bigImageIndex = 2;
 
 @synthesize mediaTypeReference = _mediaTypeReference;
 
@@ -38,6 +50,7 @@ const int artistNameLabel = 101;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     messageText = @"No data is currently available. Please pull down to refresh.";
     messageColor = [UIColor blackColor];
@@ -54,8 +67,12 @@ const int artistNameLabel = 101;
     
     nameArray = [[NSMutableArray alloc] init];
     artistArray = [[NSMutableArray alloc] init];
-    imageArray = [[NSMutableArray alloc] init];
+    priceArray = [[NSMutableArray alloc] init];
+    rightsArray = [[NSMutableArray alloc] init];
+    idArray = [[NSMutableArray alloc] init];
     
+    smallImageArray = [[NSMutableArray alloc] init];
+    bigImageArray = [[NSMutableArray alloc] init];
     
     // Add a splitview
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
@@ -70,6 +87,8 @@ const int artistNameLabel = 101;
     
     //add observer
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mediaTypeChanged:) name:@"MediaTypeChanged" object:nil];
+        
+    
     
     [self refreshUI];
 
@@ -114,11 +133,14 @@ const int artistNameLabel = 101;
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    
+
     NSDictionary *allDataDictionary = [NSJSONSerialization JSONObjectWithData:webData options:0 error:nil];
     NSDictionary *feed = [allDataDictionary objectForKey:@"feed"];
     NSArray *arrayOfEntry = [feed objectForKey:@"entry"];
     
     for (NSDictionary *diction in arrayOfEntry) {
+        
         NSDictionary *name = [diction objectForKey:@"im:name"];
         NSString *label = [name objectForKey:@"label"];
         [nameArray addObject:label];
@@ -127,14 +149,29 @@ const int artistNameLabel = 101;
         NSString *artistLabel = [artist objectForKey:@"label"];
         [artistArray addObject:artistLabel];
         
+        NSDictionary *rights = [diction objectForKey:@"rights"];
+        NSString *rightsLabel = [rights objectForKey:@"label"];
+        [rightsArray addObject:rightsLabel];
+        
+        NSDictionary *price = [diction objectForKey:@"im:price"];
+        NSString *priceLabel = [price objectForKey:@"label"];
+        [priceArray addObject:priceLabel];
+        
+        NSDictionary *urlID = [diction objectForKey:@"id"];
+        NSString *idLabel = [urlID objectForKey:@"label"];
+        [idArray addObject:idLabel];
+        
         NSArray *arrayOfImages = [diction objectForKey:@"im:image"];
-        for (NSDictionary *imageDiction in arrayOfImages) {
-            NSString *imageLabel = [imageDiction objectForKey:@"label"];
-            [imageArray addObject:imageLabel];
-        }
+        NSDictionary *smallImageDiction = [arrayOfImages objectAtIndex:smallImageIndex];
+            NSString *smallImageLabel = [smallImageDiction objectForKey:@"label"];
+            [smallImageArray addObject:smallImageLabel];
+        
+        NSDictionary *bigImageDiction = [arrayOfImages objectAtIndex:bigImageIndex];
+        NSString *bigImageLabel = [bigImageDiction objectForKey:@"label"];
+        [bigImageArray addObject:bigImageLabel];
     }
-    
     [[self tableView]reloadData];
+    
 }
 
 #pragma mark - Segues
@@ -146,6 +183,11 @@ const int artistNameLabel = 101;
         
         [detailController setNameDetailItem:[nameArray objectAtIndex:indexPath.row]];
         [detailController setArtistDetailItem:[artistArray objectAtIndex:indexPath.row]];
+        [detailController setIdDetailItem:[idArray objectAtIndex:indexPath.row]];
+        [detailController setPriceDetailItem:[priceArray objectAtIndex:indexPath.row]];
+        [detailController setRightsDetailItem:[rightsArray objectAtIndex:indexPath.row]];
+        [detailController setImageDetailItem:[bigImageArray objectAtIndex:indexPath.row]];
+        
         detailController.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         detailController.navigationItem.leftItemsSupplementBackButton = YES;
     }
@@ -193,19 +235,31 @@ const int artistNameLabel = 101;
     
     UILabel* artistLabel = (UILabel *)[cell viewWithTag:artistNameLabel];
     artistLabel.text = [artistArray objectAtIndex:indexPath.row];
+    
+    UIImageView* smallImage = (UIImageView *)[cell viewWithTag:smallUIImageView];
+    NSURL* smallImageURL = [NSURL URLWithString:[smallImageArray objectAtIndex:indexPath.row]];
+    NSData* smallImageData = [NSData dataWithContentsOfURL:smallImageURL];
+    smallImage.image = [UIImage imageWithData:smallImageData];
 
     return cell;
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
+   
     [self refreshUI];
     [refreshControl endRefreshing];
+    
 }
 
 -(void)refreshUI {
+
     [nameArray removeAllObjects];
     [artistArray removeAllObjects];
-    [imageArray removeAllObjects];
+    [priceArray removeAllObjects];
+    [rightsArray removeAllObjects];
+    [idArray removeAllObjects];
+    [smallImageArray removeAllObjects];
+    [bigImageArray removeAllObjects];
     [self.tableView reloadData];
     
     [self.tableView setBackgroundView:nil];
@@ -214,7 +268,7 @@ const int artistNameLabel = 101;
     NSURL *url = [NSURL URLWithString:jsonReference];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
+
     connection = [NSURLConnection connectionWithRequest:request delegate:self];
     
     if (connection) {
@@ -222,8 +276,10 @@ const int artistNameLabel = 101;
     }
     
     self.title = self.mediaType.description;
-
-
+    
 }
 
+//static dispatch_once_t oncePredicate;
+//dispatch_once(&oncePredicate, ^{
+//});
 @end
